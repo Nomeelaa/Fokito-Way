@@ -66,3 +66,16 @@ class PlayState(BaseState):
                 self.player.position = 3
             elif input_data.released and self.player.vx > 0:
                 self.player.vx = 0
+      
+      if input_id == "move_up":
+         if input_data.pressed:
+            self.player.vy = -settings.PLAYER_SPEED
+            self.player.position = 0
+         elif input_data.released and self.player.vy < 0:
+            self.player.vy = 0
+      elif input_id == "move_down":
+         if input_data.pressed:
+            self.player.vy = settings.PLAYER_SPEED
+            self.player.position = 2
+         elif input_data.released and self.player.vy > 0:
+            self.player.vy = 0

@@ -25,17 +25,24 @@ class Player:
         self.frames = settings.FRAMES["player_positions"]
 
         self.vx = 0
+        self.vy = 0
 
     def get_collision_rect(self) -> None:
         return pygame.Rect(self.x, self.y, self.width, self.height)
     
     def update(self, dt: float) -> None:
         next_x = self.x + self.vx * dt
+        next_y = self.y + self.vy * dt
 
         if self.vx < 0:
             self.x = max(0, next_x)
         else:
             self.x = min(settings.VIRTUAL_WIDTH - self.width, next_x)
+
+        if self.vy < 0:
+            self.y = max(0, next_y)
+        else:
+            self.y = min(settings.VIRTUAL_HEIGHT - self.height, next_y)
 
     def render(self, surface: pygame.Surface) -> None:
         surface.blit(self.texture, (self.x, self.y), self.frames[self.position][0])
