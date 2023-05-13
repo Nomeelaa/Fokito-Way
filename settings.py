@@ -87,3 +87,8 @@ FONTS = {
     "medium": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 24),
     "large": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 32),
 }
+
+#Icon of the game
+
+icon = pygame.image.load('Icon.png')
+pygame.display.set_icon(icon)
