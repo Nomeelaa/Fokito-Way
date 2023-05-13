@@ -8,14 +8,18 @@ import pygame
 from gale import frames
 from gale import input_handler
 
+from src.Frames_utility import generate_player_position
+
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_RETURN, 'enter')
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_ESCAPE, 'quit')
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_LEFT, 'move_left')
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_RIGHT, 'move_right')
+input_handler.InputHandler.set_keyboard_action(input_handler.KEY_UP, 'move_up')
+input_handler.InputHandler.set_keyboard_action(input_handler.KEY_DOWN, 'move_down')
 
 # Size we want to emulate
-VIRTUAL_WIDTH = 320
-VIRTUAL_HEIGHT = 180
+VIRTUAL_WIDTH = 640
+VIRTUAL_HEIGHT = 480
 
 # Size of our actual window
 WINDOW_WIDTH = 1024
@@ -36,7 +40,11 @@ PLAYER_SPEED = 200
 #     "hearts": pygame.image.load(BASE_DIR / "graphics" / "hearts.png"),
 #     "arrows": pygame.image.load(BASE_DIR / "graphics" / "arrows.png"),
 # }
-TEXTURES = {}
+TEXTURES = {
+    "background": pygame.image.load(BASE_DIR / "assets" / "graphics" / "background.jpg"),
+    "play_background": pygame.image.load(BASE_DIR / "assets" / "graphics" / "back01.jpg"),
+    "player_sprites_sheets": pygame.image.load(BASE_DIR / "assets" / "graphics" / "male_sprites.png"),
+}
 
 # Register your frames, for instance:
 # FRAMES = {
@@ -50,7 +58,9 @@ TEXTURES = {}
 #     "hearts": generate_frames(TEXTURES["hearts"], 10, 9),
 #     "arrows": generate_frames(TEXTURES["arrows"], 24, 24),
 # }
-FRAMES = {}
+FRAMES = {
+    "player_positions" : generate_player_position(),
+}
 
 pygame.mixer.init()
 
@@ -72,8 +82,8 @@ pygame.font.init()
 #     'small': pygame.font.Font(BASE_DIR / "assets"  / "fonts" / "font.ttf", 8)
 # }
 FONTS = {
-    "tiny": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 6),
-    "small": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 8),
-    "medium": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 12),
-    "large": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 24),
+    "tiny": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 12),
+    "small": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 18),
+    "medium": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 24),
+    "large": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 32),
 }
