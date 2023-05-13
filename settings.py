@@ -90,5 +90,5 @@ FONTS = {
 
 #Icon of the game
 
-icon = pygame.image.load('Icon.png')
+icon = pygame.image.load(BASE_DIR / "assets" / "graphics" /"Icon.png")
 pygame.display.set_icon(icon)
