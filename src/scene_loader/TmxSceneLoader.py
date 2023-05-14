@@ -1,6 +1,8 @@
 from pathlib import Path
+from typing import Any
 import xml.etree.ElementTree as ET
 
+from src.Tilemap import Tilemap
 
 class TmxSceneLoader:
     FILE_EXT = "tmx"
@@ -25,15 +27,19 @@ class TmxSceneLoader:
             name = Path(child.attrib["source"]).stem
             self.first_ids[name] = int(child.attrib["firstgid"])
 
-        for child in root.findall("group"):
-            group_name = child.attrib["name"]
-            getattr(self, f"load_{group_name}")(scene, child)
+        self.load_tilemap(scene, root)
+
+        #for child in root.findall("group"):
+        #    group_name = child.attrib["name"]
+        #    getattr(self, f"load_{group_name}")(scene, child)
 
     def load_tilemap(self, scene: any, group: ET.Element) -> None:
-        scene.tilemap.update({"rows": self.height, "cols": self.width, "layers": []})
+        tilemap = Tilemap(self.height, self.width, self.tilewidth, self.tileheight)
+        #scene.tilemap.update({"rows": self.height, "cols": self.width, "layers": []})
 
         for layer in group.findall("layer"):
-            l = [[None for _ in range(self.width)] for _ in range(self.height)]
+            tilemap.create_layer()
+            #l = [[None for _ in range(self.width)] for _ in range(self.height)]
             data = [
                 line for line in layer.find("data").text.splitlines() if len(line) > 0
             ]
@@ -45,12 +51,13 @@ class TmxSceneLoader:
                     #    frame_index = 4
                     #frame_index = value
                     frame_index = int(line[j]) - self.first_ids["tiles"]
-                    l[i][j] = {
-                        "position": (j * self.tilewidth, i * self.tileheight),
-                        "frame_index": frame_index,
-                    }
-
-            scene.tilemap["layers"].append(l)
+                    tilemap.set_new_tile(i, j, frame_index)
+                    #l[i][j] = {
+                    #    "position": (j * self.tilewidth, i * self.tileheight),
+                    #    "frame_index": frame_index,
+                    #}
+            #scene.tilemap["layers"].append(l)
+        scene.tilemap = tilemap
     
     def load_items(self, scene: any, group: ET.Element) -> None:
         pass

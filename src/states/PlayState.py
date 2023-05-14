@@ -20,20 +20,26 @@ import pygame
 
 from src.Player import Player
 from src.Enemy import Enemy
-from src.Scene import Scene
+#from src.Scene import Scene
 
 
 class PlayState(BaseState):
-   def enter(self, **params: dict) -> None:
-      self.level = params["level"]
-      self.player = params["player"]
-      self.enemy = params["enemy"]
-      self.scene = Scene()
+   def enter(self, **enter_params: dict) -> None:
+      self.level = enter_params.get("level", 1)
+
+      self.player = enter_params["player"]
+      self.enemy = enter_params["enemy"]
+
+      #self.scene = Scene()
+
+      self.tilemap = None
+      settings.LevelLoader().load(self, settings.TILEMAPS[self.level])
+
       # se actualiza los valores para cuando se vuelva del estado VictoryState
       self.player.x = 20
       self.player.y = 20
       self.enemy.vx = 100
-      self.score = params.get("score", 0)
+      self.score = enter_params.get("score", 0)
 
       #InputHandler
 
@@ -45,7 +51,8 @@ class PlayState(BaseState):
    def render(self, surface: pygame.Surface) -> None:
       surface.fill((0,0,0))
 
-      self.scene.render(surface)
+      #self.scene.render(surface)
+      self.tilemap.render(surface)
 
       render_text(
             surface,

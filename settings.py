@@ -98,6 +98,16 @@ FONTS = {
 
 SceneLoader = scene_loader.TmxSceneLoader
 
+#implement with drawableMixin
+NUM_LEVELS = 1
+
+LevelLoader = scene_loader.TmxSceneLoader
+
+TILEMAPS = {
+    i: BASE_DIR / "assets" /"tilemaps" / f"level{i}" for i in range(1, NUM_LEVELS + 1)
+}
+#END
+
 
 def build_scene_path(scene_number: int) -> pathlib.Path:
     return BASE_DIR / "assets" / "scenes" / f"{scene_number:02}"
