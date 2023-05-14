@@ -9,6 +9,7 @@ This file contains the class to define the Start state.
 """
 import pygame
 import sys
+import random
 
 
 from gale.input_handler import InputData
@@ -18,11 +19,14 @@ from gale.text import render_text
 import settings
 
 from src.Player import Player
+from src.Enemy import Enemy
 
 class StartState(BaseState):
     def enter(self) -> None:
         self.selected = 1
         self.player = Player(20,20)
+        for _ in range(4):
+            self.enemy = Enemy(random.randint(100,200),random.randint(100,300))
 
     def on_input(self, input_id: str, input_data: InputData) -> None:
         if input_id == "move_down" and input_data.pressed and self.selected == 1:
@@ -36,7 +40,7 @@ class StartState(BaseState):
             pass
 
             if self.selected == 1:
-                self.state_machine.change("play", level=1, player=self.player)
+                self.state_machine.change("play", level=1, player=self.player, enemy=self.enemy)
             else:
                 sys.exit()
 

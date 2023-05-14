@@ -20,24 +20,32 @@ import pygame
 
 from src.Player import Player
 from src.Enemy import Enemy
+from src.Scene import Scene
 
 
 class PlayState(BaseState):
    def enter(self, **params: dict) -> None:
       self.level = params["level"]
       self.player = params["player"]
+      self.enemy = params["enemy"]
+      self.scene = Scene()
       # se actualiza los valores para cuando se vuelva del estado VictoryState
       self.player.x = 20
       self.player.y = 20
+      self.enemy.vx = 100
       self.score = params.get("score", 0)
 
       #InputHandler
 
    def update(self, dt: float) -> None:
       self.player.update(dt)
+      self.enemy.update(dt)
+      self.enemy.solve_world_boundaries()
 
    def render(self, surface: pygame.Surface) -> None:
       surface.fill((0,0,0))
+
+      self.scene.render(surface)
 
       render_text(
             surface,
@@ -49,6 +57,7 @@ class PlayState(BaseState):
         )
       
       self.player.render(surface)
+      self.enemy.render(surface)
 
       
       #surface.blit(settings.TEXTURES["play_background"], (0, 0))

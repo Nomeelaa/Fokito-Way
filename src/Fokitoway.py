@@ -22,6 +22,7 @@ class Fokitoway(Game, InputListener):
             }
         )
         self.state_machine.change("start")
+        pygame.display.set_icon(settings.TEXTURES["icon_game"])
         InputHandler.register_listener(self)
 
     def update(self, dt: float) -> None:

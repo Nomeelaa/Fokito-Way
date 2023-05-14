@@ -30,6 +30,25 @@ def generate_player_position() -> List[List[pygame.Rect]]:
         y += player_height
     return frames
 
+def generate_enemy_position() -> List[List[pygame.Rect]]:
+    player_width = 14
+    player_height = 17
+
+    x = 96
+    y = 15
+
+    frames = []
+
+    for _ in range (4):
+        frames.append(
+            [
+                # The first player position is in (0,0) and its dimensions are 64x64
+                pygame.Rect(x,y,player_width,player_height),
+            ]
+        )
+        #x += player_width + 3
+        y += player_height + 15
+    return frames
 
 def generate_paddle_frames() -> List[List[pygame.Rect]]:
     paddle_base_width = 32
