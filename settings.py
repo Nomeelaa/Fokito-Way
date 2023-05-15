@@ -10,8 +10,7 @@ import pygame
 from gale import frames
 from gale import input_handler
 
-from src import scene_loader
-from src.Frames_utility import generate_player_position, generate_enemy_position
+from src import level_loader
 
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_RETURN, 'enter')
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_ESCAPE, 'quit')
@@ -19,6 +18,8 @@ input_handler.InputHandler.set_keyboard_action(input_handler.KEY_LEFT, 'move_lef
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_RIGHT, 'move_right')
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_UP, 'move_up')
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_DOWN, 'move_down')
+input_handler.InputHandler.set_keyboard_action(input_handler.KEY_SPACE, 'jump')
+input_handler.InputHandler.set_mouse_click_action(input_handler.MOUSE_BUTTON_1, 'attack')
 
 # Size we want to emulate
 VIRTUAL_WIDTH = 640
@@ -30,7 +31,9 @@ WINDOW_HEIGHT = 720
 
 BASE_DIR = pathlib.Path(__file__).parent
 
-PLAYER_SPEED = 200
+PLAYER_SPEED = 80
+
+GRAVITY = 980
 
 # Register your textures from the graphics folder, for instance:
 # TEXTURES = {
@@ -50,6 +53,7 @@ TEXTURES = {
     "icon_game": pygame.image.load(BASE_DIR / "assets" / "graphics" /"Icon.png"),
     "enemy_sprites_sheets": pygame.image.load(BASE_DIR / "assets" / "graphics" / "enemy_sprites.png"),
     "tiles": pygame.image.load(BASE_DIR / "assets" / "graphics" / "forest_sheet.png"),
+    "fokito": pygame.image.load(BASE_DIR / "assets" / "graphics" / "martian.png"),
 }
 
 # Register your frames, for instance:
@@ -65,9 +69,8 @@ TEXTURES = {
 #     "arrows": generate_frames(TEXTURES["arrows"], 24, 24),
 # }
 FRAMES = {
-    "player_positions" : generate_player_position(),
-    "enemy_positions" : generate_enemy_position(),
     "tiles": frames.generate_frames(TEXTURES["tiles"], 18, 18),
+    "fokito": frames.generate_frames(TEXTURES["fokito"], 16, 20),
 }
 
 pygame.mixer.init()
@@ -96,18 +99,12 @@ FONTS = {
     "large": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 32),
 }
 
-SceneLoader = scene_loader.TmxSceneLoader
-
 #implement with drawableMixin
 NUM_LEVELS = 1
 
-LevelLoader = scene_loader.TmxSceneLoader
+LevelLoader = level_loader.TmxSceneLoader
 
 TILEMAPS = {
-    i: BASE_DIR / "assets" /"tilemaps" / f"level{i}" for i in range(1, NUM_LEVELS + 1)
+    i: BASE_DIR / "assets" / "tilemaps" / f"level{i}" for i in range(1, NUM_LEVELS + 1)
 }
 #END
-
-
-def build_scene_path(scene_number: int) -> pathlib.Path:
-    return BASE_DIR / "assets" / "scenes" / f"{scene_number:02}"

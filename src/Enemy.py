@@ -15,8 +15,8 @@ class Enemy:
         # By default, rigth view position
         self.position = random.randint(0,3)
 
-        self.texture = settings.TEXTURES["enemy_sprites_sheets"]
-        self.frames = settings.FRAMES["enemy_positions"]
+        #self.texture = settings.TEXTURES["enemy_sprites_sheets"]
+        #self.frames = settings.FRAMES["enemy_positions"]
 
         self.vx = 0
         self.vy = 0
@@ -57,6 +57,7 @@ class Enemy:
         #self.y += self.vy * dt
 
     def render(self, surface):
-        surface.blit(
-            self.texture, (self.x, self.y), self.frames[self.position][self.lvl]
-        )
+        pass
+        #surface.blit(
+        #    self.texture, (self.x, self.y), self.frames[self.position][self.lvl]
+        #)

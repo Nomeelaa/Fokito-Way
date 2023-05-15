@@ -58,6 +58,6 @@ class TmxSceneLoader:
                     #}
             #scene.tilemap["layers"].append(l)
         scene.tilemap = tilemap
-    
+   
     def load_items(self, scene: any, group: ET.Element) -> None:
         pass

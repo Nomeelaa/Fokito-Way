@@ -8,17 +8,15 @@ from gale.game import Game
 from gale.input_handler import InputData, InputHandler, InputListener
 from gale.state import StateMachine
 
-from src import states
-
+from src.states import game_states
 
 class Fokitoway(Game, InputListener):
     def init(self) -> None:
         self.state_machine = StateMachine(
             {
-                "start": states.StartState,
-                "play": states.PlayState,
-                "game-over": states.GameOverState,
-                "pause": states.PauseState,
+                "start": game_states.StartState,
+                "play": game_states.PlayState,
+                "game-over": game_states.GameOverState,
             }
         )
         self.state_machine.change("start")
