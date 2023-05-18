@@ -6,6 +6,8 @@ import settings
 from src.GameEntity import GameEntity
 from src.states.entities import enemy_states
 
+from gale.input_handler import InputData
+
 class Enemy(GameEntity):
     def __init__(self, x: int, y: int, game_level: TypeVar("GameLevel")) -> None:
         self.in_play = True
@@ -22,9 +24,11 @@ class Enemy(GameEntity):
                 "idle": lambda sm: enemy_states.IdleState(self, sm),
                 "walk": lambda sm: enemy_states.WalkState(self, sm),
             },
-            
+           
             animation_defs={
                 "idle": {"frames": [0]},
+                "idle_horizontal": {"frames": [9]},
+                "idle_up": {"frames": [5]},
                 "walk": {"frames": [9, 10], "interval": 0.15},
                 "walk_up": {"frames": [5, 6], "interval": 0.15},
             },
@@ -58,3 +62,5 @@ class Enemy(GameEntity):
             #settings.SOUNDS["hurt"].play()
             self.in_play = False
 
+    def on_input(self, input_id: str, input_data: InputData) -> None:
+        self.state_machine.on_input(input_id, input_data)
