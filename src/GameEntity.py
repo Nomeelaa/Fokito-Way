@@ -47,38 +47,17 @@ class GameEntity(mixins.DrawableMixin, mixins.AnimatedMixin, mixins.CollidableMi
         self.init_direction = 0
         self.actual_direction = None
         self.type_player = type_player
+        self.timer = None
 
     def change_state(
         self, state_id: str, *args: Tuple[Any], **kwargs: Dict[str, Any]
     ) -> None:
         self.state_machine.change(state_id, *args, **kwargs)
 
-    def update(self, dt: float) -> None:
+    def update(self, dt: float, timer: int) -> None:
+        self.timer = timer
         self.state_machine.update(dt)
         mixins.AnimatedMixin.update(self, dt)
-
-        #next_x = self.x + self.vx * dt
-        #next_y = self.y + self.vy * dt
-
-        #if self.direction in("left", "right"):
-        #    if self.vx < 0:
-        #        self.x = max(0, next_x)
-        #    else:
-        #        self.x = min(self.tilemap.width - self.width, next_x)
-        #elif self.direction in ("up", "down"):
-        #    if self.vy < 0:
-        #        self.y = max(0, next_y)
-        #    else:
-        #        self.y = min(self.tilemap.height - self.height, next_y)
-        
-        #self.y += self.vy * dt
-
-        #next_x = self.x + self.vx * dt
-
-        #if self.vx < 0:
-        #    self.x = max(0, next_x)
-        #else:
-        #    self.x = min(self.tilemap.width - self.width, next_x)
 
     def handle_tilemap_collision_on_top(self) -> bool:
         collision_rect = self.get_collision_rect()

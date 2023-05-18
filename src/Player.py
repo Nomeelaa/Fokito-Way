@@ -3,8 +3,6 @@ from typing import TypeVar
 from gale.input_handler import InputData
 
 from src.GameEntity import GameEntity
-#from src.states import player_states
-#from src.states.entities.player_states import player_states
 from src.states.entities import player_states
 
 class Player(GameEntity):

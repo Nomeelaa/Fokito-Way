@@ -1,9 +1,10 @@
 """ 
-ISPPJ1 2023
-Study Case: Breakout
+VGP 2023
+Group: DJ-TKD
+Project: Fokito Way
 
-Author: Alejandro Mujica
-alejandro.j.mujic4@gmail.com
+Author: Gerardo Montes, Alberto 
+gm5072@gmail.com
 
 This file contains the class to define the Start state.
 """
@@ -12,16 +13,17 @@ from random import randint
 
 import pygame
 
-from gale.input_handler import InputData
-from gale.state import BaseState
-
 import settings
 from src.Camera import Camera
 from src.GameLevel import GameLevel
 
+#import Gale Modules
 from gale.text import render_text
 from gale.timer import Timer
+from gale.input_handler import InputData
+from gale.state import BaseState
 
+#import Entites class
 from src.Player import Player
 from src.Enemy import Enemy
 
@@ -41,46 +43,55 @@ class PlayState(BaseState):
         )
       #set de first animate mode of player
       self.player.change_state("idle")
-      #create a enemy if no pass in params
+
+      self.score = enter_params.get("score", 0)
+      #create a list of enemy
       self.all_enemy = []
 
-      for _ in range(randint(1,4)):
-         self.all_enemy.append(Enemy(50, 70, self.game_level))
-      #print("TAmaño de lista: ", len(self.all_enemy))
-      #self.enemy = enter_params.get("enemy", Enemy(20, 70, self.game_level))
-      #set de first animate mode of player
-      #self.enemy.change_state("idle")
-
-      #if self.enemy.in_play:
-      #   print("en juego")
-      #   print(self.enemy.move_direction)
+      for _ in range(randint(3,30)):
+         self.all_enemy.append(Enemy(randint(18,100), randint(50,400), self.game_level))
 
       if (self.player.life == 100):
          print("Life of player: 100")
 
       for _, enemy in enumerate(self.all_enemy):
-         enemy.change_state("idle")
+         enemy.change_state("idle", randint(1,10))
     
-      #self.enemy = enter_params["enemy"]
-
-      #self.enemy.vx = 100
-      self.score = enter_params.get("score", 0)
 
       def create_new_enemy():
          for _ in range(randint(1,10)):
             self.all_enemy.append(Enemy(randint(18,100), randint(50,400), self.game_level))
-         for _, enemy in enumerate(self.all_enemy):
-            enemy.change_state("idle")
+         #for _, enemy in enumerate(self.all_enemy):
+         #   enemy.change_state("idle", randint(1,10)) #reset all enemy time
 
-      Timer.every(15, create_new_enemy, 5)
+      #Timer.every(30, create_new_enemy, 2)
+
+      self.time_in_play = "00:00"
+      #self.time_in_play = "00:00:00"
+      self.timer = 0
+      self.seconds = 0
+      self.minutes = 0
+      self.hours = 0
+
+      def count_timer():
+         self.seconds += 1
+         #for _, enemy in enumerate(self.all_enemy):
+         #   enemy.timer += 1
+         if self.seconds == 60 :
+            self.seconds = 0
+            self.minutes += 1
+            if self.minutes == 60:
+               self.minutes = 0
+               self.hours += 1
+         #self.time_in_play = f"{self.hours:02}:{self.minutes:02}:{self.seconds:02}"
+         self.time_in_play = f"{self.minutes:02}:{self.seconds:02}"
+
+      Timer.every(1, count_timer)
 
       #Timer.every(1, countdown_timer) #ejecuta la funcion cada x segundos
 
-   def exit(self) -> None:
-        Timer.clear() 
-
    def update(self, dt: float) -> None:
-      self.player.update(dt)
+      self.player.update(dt, self.seconds)
 
       self.camera.x = max(
          0,
@@ -101,7 +112,13 @@ class PlayState(BaseState):
       #self.enemy.update(dt)
 
       for _, enemy in enumerate(self.all_enemy):
-         enemy.update(dt)
+         enemy.update(dt, self.seconds)
+         #print(f"enemy({_})")
+      
+      #print(self.seconds)
+      #print("seconds: ", self.all_enemy[0].seconds)
+      #print("minutes: ",self.all_enemy[0].min)
+      #print("hours: ",self.all_enemy[0].hrs)
 
       #for i in range(4):
       #   self.all_enemy[i].update(dt)
@@ -195,6 +212,22 @@ class PlayState(BaseState):
          (255, 255, 255),
       )
 
+      
+      render_text(
+         surface,
+         f"Time: {self.time_in_play}",
+         settings.FONTS["score_tiny"],
+         settings.VIRTUAL_WIDTH - 150,
+         55,
+         (255, 255, 255),
+         shadowed=True,
+      )
+      
+
    def on_input(self, input_id: str, input_data: InputData) -> None:
       self.player.on_input(input_id, input_data)
+      self.all_enemy[0].on_input(input_id, input_data)
+
+   def exit(self) -> None:
+        Timer.clear() 
       

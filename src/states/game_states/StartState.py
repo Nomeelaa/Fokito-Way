@@ -15,6 +15,7 @@ import random
 from gale.input_handler import InputData
 from gale.state import BaseState
 from gale.text import render_text
+from gale.timer import Timer
 
 import settings
 
@@ -22,8 +23,9 @@ import settings
 class StartState(BaseState):
     def enter(self) -> None:
         self.selected = 1
-        #for _ in range(4):
-        #    self.enemy = Enemy(random.randint(100,200),random.randint(100,300))
+
+    def update(self, dt: float) -> None:
+        pass
 
     def on_input(self, input_id: str, input_data: InputData) -> None:
         if input_id == "move_down" and input_data.pressed and self.selected == 1:
@@ -37,7 +39,7 @@ class StartState(BaseState):
             pass
 
             if self.selected == 1:
-                self.state_machine.change("play", level=1)
+                self.state_machine.change("play", level=1, timer=self.seconds)
                 #self.state_machine.change("play", level=1, player=self.player, enemy=self.enemy)
             else:
                 sys.exit()
