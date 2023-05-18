@@ -10,7 +10,7 @@ This file contains the class FallState for player.
 from gale.input_handler import InputData
 
 import settings
-from src.states.player_states.BaseEntityState import BaseEntityState
+from src.states.entities.enemy_states.BaseEntityState import BaseEntityState
 
 
 class FallState(BaseEntityState):

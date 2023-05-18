@@ -5,18 +5,17 @@ Study Case: Super Martian (Platformer)
 Author: Alejandro Mujica
 alejandro.j.mujic4@gmail.com
 
-This file contains the class JumpState for player.
+This file contains the class FallState for player.
 """
 from gale.input_handler import InputData
 
 import settings
-from src.states.player_states.BaseEntityState import BaseEntityState
+from src.states.entities.player_states.BaseEntityState import BaseEntityState
 
 
-class JumpState(BaseEntityState):
+class FallState(BaseEntityState):
     def enter(self) -> None:
         self.entity.change_animation("jump")
-        self.entity.vy = -settings.GRAVITY / 3
 
     def update(self, dt: float) -> None:
         self.entity.vy += settings.GRAVITY * dt
@@ -24,11 +23,14 @@ class JumpState(BaseEntityState):
         # If there is a collision on the right, correct x. Else, correct x if there is collision on the left.
         self.entity.handle_tilemap_collision_on_right() or self.entity.handle_tilemap_collision_on_left()
 
-        if self.entity.handle_tilemap_collision_on_top():
+        if self.entity.handle_tilemap_collision_on_bottom():
             self.entity.vy = 0
-
-        if self.entity.vy >= 0:
-            self.entity.change_state("fall")
+            if self.entity.vx > 0:
+                self.entity.change_state("walk", "right")
+            elif self.entity.vx < 0:
+                self.entity.change_state("walk", "left")
+            else:
+                self.entity.change_state("idle")
 
     def on_input(self, input_id: str, input_data: InputData) -> None:
         if input_id == "move_left":
