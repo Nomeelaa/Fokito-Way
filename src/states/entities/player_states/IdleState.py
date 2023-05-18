@@ -40,9 +40,9 @@ class IdleState(BaseEntityState):
             self.entity.actual_direction = "down"
             self.entity.change_state("walk", self.entity.actual_direction)
 
-        if input_id == "jump" and input_data.pressed:
-            self.entity.change_state("jump")
-       
+        #if input_id == "jump" and input_data.pressed:
+        #    self.entity.change_state("jump")
+      
         #elif input_id == "attack" and input_data.pressed:
         #    pass
         #    self.entity.change_state("attack")

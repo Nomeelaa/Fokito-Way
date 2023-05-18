@@ -39,7 +39,7 @@ class StartState(BaseState):
             pass
 
             if self.selected == 1:
-                self.state_machine.change("play", level=1, timer=self.seconds)
+                self.state_machine.change("play", level=1)
                 #self.state_machine.change("play", level=1, player=self.player, enemy=self.enemy)
             else:
                 sys.exit()
