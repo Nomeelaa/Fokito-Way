@@ -32,6 +32,7 @@ WINDOW_HEIGHT = 720
 BASE_DIR = pathlib.Path(__file__).parent
 
 PLAYER_SPEED = 80
+ENEMY_SPEED = 20
 
 GRAVITY = 980
 
@@ -48,12 +49,13 @@ GRAVITY = 980
 # }
 TEXTURES = {
     "background": pygame.image.load(BASE_DIR / "assets" / "graphics" / "background.jpg"),
-    "play_background": pygame.image.load(BASE_DIR / "assets" / "graphics" / "back01.jpg"),
     "player_sprites_sheets": pygame.image.load(BASE_DIR / "assets" / "graphics" / "male_sprites.png"),
     "icon_game": pygame.image.load(BASE_DIR / "assets" / "graphics" /"Icon.png"),
     "enemy_sprites_sheets": pygame.image.load(BASE_DIR / "assets" / "graphics" / "enemy_sprites.png"),
     "tiles": pygame.image.load(BASE_DIR / "assets" / "graphics" / "forest_sheet.png"),
-    "fokito": pygame.image.load(BASE_DIR / "assets" / "graphics" / "martian.png"),
+    "fokito": pygame.image.load(BASE_DIR / "assets" / "graphics" / "fokito-16-26.png"),
+    "skeleton": pygame.image.load(BASE_DIR / "assets" / "graphics" / "skeleton.png"),
+    "martian": pygame.image.load(BASE_DIR / "assets" / "graphics" / "martian.png"),
 }
 
 # Register your frames, for instance:
@@ -70,7 +72,9 @@ TEXTURES = {
 # }
 FRAMES = {
     "tiles": frames.generate_frames(TEXTURES["tiles"], 18, 18),
-    "fokito": frames.generate_frames(TEXTURES["fokito"], 16, 20),
+    "fokito": frames.generate_frames(TEXTURES["fokito"], 16, 26),
+    "skeleton": frames.generate_frames(TEXTURES["skeleton"], 30, 47),
+    "martian": frames.generate_frames(TEXTURES["martian"], 16, 20),
 }
 
 pygame.mixer.init()
@@ -93,6 +97,7 @@ pygame.font.init()
 #     'small': pygame.font.Font(BASE_DIR / "assets"  / "fonts" / "font.ttf", 8)
 # }
 FONTS = {
+    "score_tiny": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "font.ttf", 8),
     "tiny": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 12),
     "small": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 18),
     "medium": pygame.font.Font(BASE_DIR / "assets" / "fonts" / "fireside.otf", 24),
