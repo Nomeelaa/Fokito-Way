@@ -3,16 +3,22 @@ from typing import TypeVar
 from gale.input_handler import InputData
 
 from src.GameEntity import GameEntity
-from src.states import player_states
-
+#from src.states import player_states
+#from src.states.entities.player_states import player_states
+from src.states.entities import player_states
 
 class Player(GameEntity):
     def __init__(self, x: int, y: int, game_level: TypeVar("GameLevel")) -> None:
+        self.life = 100
+        self.actual_direction = None
+        self.attack = 1
+        self.weapon = True
+        #self.score = 0
         super().__init__(
             x,
             y,
             16,
-            20,
+            26,
             "fokito",
             game_level,
             states={
@@ -23,10 +29,14 @@ class Player(GameEntity):
             },
             animation_defs={
                 "idle": {"frames": [0]},
-                "walk_horizontal": {"frames": [9, 10], "interval": 0.15},
-                "walk_vertical": {"frames": [5, 6], "interval": 0.15},
+                "idle_horizontal": {"frames": [9]},
+                "idle_up": {"frames": [19]},
+                "walk_horizontal": {"frames": [9,10,11,12,13,14,15,16,17], "interval": 0.15},
+                "walk_up": {"frames": [19,20, 21, 22,23,24,25,26], "interval": 0.15},
+                "walk_down": {"frames": [1,2,3,4,5,6,7,8], "interval": 0.15},
                 "jump": {"frames": [2]},
             },
+            type_player=True,
         )
 
     def on_input(self, input_id: str, input_data: InputData) -> None:

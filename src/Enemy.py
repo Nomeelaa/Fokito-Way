@@ -1,29 +1,35 @@
 import random
-
+from typing import TypeVar
 import pygame
 
 import settings
+from src.GameEntity import GameEntity
+from src.states.entities import enemy_states
 
-class Enemy:
-    def __init__(self, x: int, y: int) -> None:
-        self.x = x
-        self.y = y
-        self.lvl = 0
-        self.width = 14
-        self.height = 17
-
-        # By default, rigth view position
-        self.position = random.randint(0,3)
-
-        #self.texture = settings.TEXTURES["enemy_sprites_sheets"]
-        #self.frames = settings.FRAMES["enemy_positions"]
-
-        self.vx = 0
-        self.vy = 0
-
-        #self.texture = settings.TEXTURES["spritesheet"]
-        #self.frame = random.randint(0, 6)
+class Enemy(GameEntity):
+    def __init__(self, x: int, y: int, game_level: TypeVar("GameLevel")) -> None:
         self.in_play = True
+        self.move_direction = random.choice(['left', 'right', 'up', 'down'])
+        self.life = 10
+        super().__init__(
+            x,
+            y,
+            16,
+            20,
+            "martian",
+            game_level,
+            states={
+                "idle": lambda sm: enemy_states.IdleState(self, sm),
+                "walk": lambda sm: enemy_states.WalkState(self, sm),
+            },
+            
+            animation_defs={
+                "idle": {"frames": [0]},
+                "walk": {"frames": [9, 10], "interval": 0.15},
+                "walk_up": {"frames": [5, 6], "interval": 0.15},
+            },
+            type_player=False,
+        )
 
     def get_collision_rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
@@ -52,12 +58,3 @@ class Enemy:
             #settings.SOUNDS["hurt"].play()
             self.in_play = False
 
-    def update(self, dt: float) -> None:
-        self.x += self.vx * dt
-        #self.y += self.vy * dt
-
-    def render(self, surface):
-        pass
-        #surface.blit(
-        #    self.texture, (self.x, self.y), self.frames[self.position][self.lvl]
-        #)
