@@ -26,6 +26,7 @@ class GameEntity(mixins.DrawableMixin, mixins.AnimatedMixin, mixins.CollidableMi
         game_level: TypeVar("GameLevel"),
         states: Dict[str, BaseState],
         animation_defs: Dict[str, Dict[str, Any]],
+        type_player: bool,
     ) -> None:
         self.x = x
         self.y = y
@@ -43,6 +44,9 @@ class GameEntity(mixins.DrawableMixin, mixins.AnimatedMixin, mixins.CollidableMi
         self.generate_animations(animation_defs)
         self.flipped = False
         self.direction = None
+        self.init_direction = 0
+        self.actual_direction = None
+        self.type_player = type_player
 
     def change_state(
         self, state_id: str, *args: Tuple[Any], **kwargs: Dict[str, Any]
@@ -67,14 +71,14 @@ class GameEntity(mixins.DrawableMixin, mixins.AnimatedMixin, mixins.CollidableMi
         #    else:
         #        self.y = min(self.tilemap.height - self.height, next_y)
         
-        self.y += self.vy * dt
+        #self.y += self.vy * dt
 
-        next_x = self.x + self.vx * dt
+        #next_x = self.x + self.vx * dt
 
-        if self.vx < 0:
-            self.x = max(0, next_x)
-        else:
-            self.x = min(self.tilemap.width - self.width, next_x)
+        #if self.vx < 0:
+        #    self.x = max(0, next_x)
+        #else:
+        #    self.x = min(self.tilemap.width - self.width, next_x)
 
     def handle_tilemap_collision_on_top(self) -> bool:
         collision_rect = self.get_collision_rect()
@@ -91,6 +95,8 @@ class GameEntity(mixins.DrawableMixin, mixins.AnimatedMixin, mixins.CollidableMi
         ) or self.tilemap.collides_tile_on(i - 1, right, self, GameObject.BOTTOM):
             # Fix the entity position
             self.y = self.tilemap.to_y(i)
+            if self.type_player:
+                self.change_animation("idle_up")
             return True
 
         return False
@@ -109,6 +115,8 @@ class GameEntity(mixins.DrawableMixin, mixins.AnimatedMixin, mixins.CollidableMi
         ) or self.tilemap.collides_tile_on(i + 1, right, self, GameObject.TOP):
             # Fix the entity position
             self.y = self.tilemap.to_y(i + 1) - self.height
+            if self.type_player:
+                self.change_animation("idle")
             return True
         return False
 
@@ -126,6 +134,8 @@ class GameEntity(mixins.DrawableMixin, mixins.AnimatedMixin, mixins.CollidableMi
         ) or self.tilemap.collides_tile_on(center, j + 1, self, GameObject.LEFT):
             # Fix the entity position
             self.x = self.tilemap.to_x(j + 1) - self.width
+            if self.type_player:
+                self.change_animation("idle_horizontal")
             return True
 
         return False
@@ -144,6 +154,8 @@ class GameEntity(mixins.DrawableMixin, mixins.AnimatedMixin, mixins.CollidableMi
         ) or self.tilemap.collides_tile_on(center, j - 1, self, GameObject.RIGHT):
             # Fix the entity position
             self.x = self.tilemap.to_x(j)
+            if self.type_player:
+                self.change_animation("idle_horizontal")
             return True
 
         return False

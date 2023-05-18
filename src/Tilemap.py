@@ -88,6 +88,8 @@ class Tilemap:
         self, i: int, j: int, another: mixins.CollidableMixin, side: str
     ) -> bool:
         if 0 <= i < self.rows and 0 <= j < self.cols:
+            #print("Num Rows: ", self.rows)
+            #print("Num Cols: ", self.cols)
             for layer in self.layers:
                 if layer[i][j].collides_on(another, side):
                     return True
