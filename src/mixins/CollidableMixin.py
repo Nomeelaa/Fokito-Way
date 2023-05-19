@@ -18,3 +18,6 @@ class CollidableMixin:
 
     def collides(self, another: Any) -> bool:
         return self.get_collision_rect().colliderect(another.get_collision_rect())
+    
+    def collides_others(self, rect: pygame.Rect, anotherother: any) -> bool:
+        return anotherother.get_collision_rect().colliderect(rect)

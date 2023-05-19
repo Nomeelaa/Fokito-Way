@@ -126,9 +126,19 @@ class PlayState(BaseState):
 
       #self.enemy.update(dt)
       #self.enemy.solve_world_boundaries()
+
       self.game_level.update(dt)
+
+      #Check collision of enemy with player to rest life
       if (self.player.life > 0):
          for _, enemy in enumerate(self.all_enemy):
+            if enemy.in_area(self.player):
+               print("in area")
+               enemy.follow_entity(self.player.x, self.player.y)
+            else:
+               #print("Salio de area")
+               pass
+
             if enemy.collides(self.player):
                print("score: ", self.score)
                if (self.player.weapon is None):
@@ -178,11 +188,12 @@ class PlayState(BaseState):
       
 
       
-      
+      world_surface.fill((255,255,255), self.player.get_collision_rect())
       self.player.render(world_surface)
       #self.enemy.render(world_surface)
 
       for _, enemy in enumerate(self.all_enemy):
+         world_surface.fill((255,255,255), enemy.get_scan_rect())
          enemy.render(world_surface)
 
       #for i in range(4):
