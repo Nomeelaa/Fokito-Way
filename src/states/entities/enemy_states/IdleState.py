@@ -22,6 +22,9 @@ class IdleState(BaseEntityState):
     def enter(self, direction: str) -> None:
         self.entity.vx = 0
         self.entity.vy = 0
+        self.entity.no_change = False
+        self.entity.actual_direction = direction
+        #self.entity.actual_direction = direction
         if direction == "idle":
             self.time_wait = randint(2,4)
         else:
@@ -38,12 +41,15 @@ class IdleState(BaseEntityState):
 
 
     def update(self, dt: float) -> None:
+        #rint("ENTER IDLE")
         self.t1 = pygame.time.get_ticks() / 1000
         dt = self.t1 - self.t0
 
         if dt >= self.time_wait:
             self.t0 = self.t1
-            self.entity.change_state("walk", random.choice(["left", "right", "up", "down"]))
+            temp = random.choice(["left", "right", "up", "down"])
+            self.entity.actual_direction = temp
+            self.entity.change_state("walk", temp)
         else:
             pass
 

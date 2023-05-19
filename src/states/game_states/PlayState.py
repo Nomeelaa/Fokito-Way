@@ -49,13 +49,13 @@ class PlayState(BaseState):
       self.all_enemy = []
 
       for _ in range(randint(3,30)):
-         self.all_enemy.append(Enemy(randint(18,100), randint(50,400), self.game_level))
+         self.all_enemy.append(Enemy(randint(18,100), randint(50,400), self.game_level, "idle"))
 
       if (self.player.life == 100):
          print("Life of player: 100")
 
       for _, enemy in enumerate(self.all_enemy):
-         enemy.change_state("idle", randint(1,10))
+         enemy.change_state("idle", "None")
     
 
       def create_new_enemy():
@@ -108,36 +108,20 @@ class PlayState(BaseState):
             self.tilemap.height - settings.VIRTUAL_HEIGHT,
          ),
       )
-
-      #self.enemy.update(dt)
-
+#############################################################
       for _, enemy in enumerate(self.all_enemy):
-         enemy.update(dt, self.seconds)
-         #print(f"enemy({_})")
-      
-      #print(self.seconds)
-      #print("seconds: ", self.all_enemy[0].seconds)
-      #print("minutes: ",self.all_enemy[0].min)
-      #print("hours: ",self.all_enemy[0].hrs)
-
-      #for i in range(4):
-      #   self.all_enemy[i].update(dt)
-
-
-      #self.enemy.update(dt)
-      #self.enemy.solve_world_boundaries()
+         if enemy.in_area(self.player):
+            enemy.into_area = True
+            enemy.change_state("attack", self.player.get_collision_rect())
+         enemy.update(dt, 0)
+         
+#############################################################      
 
       self.game_level.update(dt)
 
       #Check collision of enemy with player to rest life
       if (self.player.life > 0):
          for _, enemy in enumerate(self.all_enemy):
-            if enemy.in_area(self.player):
-               print("in area")
-               enemy.follow_entity(self.player.x, self.player.y)
-            else:
-               #print("Salio de area")
-               pass
 
             if enemy.collides(self.player):
                print("score: ", self.score)
@@ -152,33 +136,8 @@ class PlayState(BaseState):
                   break
             if self.player.collides(enemy):
                print("Colision")
-
-               #self.all_enemy[i].vx = 0
-               #self.all_enemy[i].vy = 0
-               #self.all_enemy[i].change_animation("idle")
       else:
-         self.state_machine.change("game_over", score=self.score)
-      #for i in range(len(self.all_enemy)):
-      #for i in range(4):
-      #   if self.all_enemy[i].collides(self.player):
-      #      print("score: ", self.score)
-      #      if (self.player.weapon is None):
-      #         self.player.life -= 1
-      #      else:
-      #         self.all_enemy[i].life -= self.player.attack
-      #      if self.all_enemy[i].life == 0:
-      #         self.all_enemy.remove(self.all_enemy[i])
-      #         break
-      #      if (self.player.life == 0):
-      #         self.state_machine.change("game_over", score=self.score)
-      #         break
-      #   if self.player.collides(self.all_enemy[i]):
-      #      print("Colision")
-
-      #      self.all_enemy[i].vx = 0
-      #      self.all_enemy[i].vy = 0
-      #      self.all_enemy[i].change_animation("idle")
-      
+         self.state_machine.change("game_over", score=self.score)      
 
    def render(self, surface: pygame.Surface) -> None:
       surface.fill((0,0,0))
@@ -188,12 +147,12 @@ class PlayState(BaseState):
       
 
       
-      world_surface.fill((255,255,255), self.player.get_collision_rect())
+      #world_surface.fill((255,255,255), self.player.get_collision_rect())
       self.player.render(world_surface)
       #self.enemy.render(world_surface)
 
       for _, enemy in enumerate(self.all_enemy):
-         world_surface.fill((255,255,255), enemy.get_scan_rect())
+         #world_surface.fill((255,255,255), enemy.get_scan_rect())
          enemy.render(world_surface)
 
       #for i in range(4):
@@ -236,8 +195,11 @@ class PlayState(BaseState):
       
 
    def on_input(self, input_id: str, input_data: InputData) -> None:
-      self.player.on_input(input_id, input_data)
-      self.all_enemy[0].on_input(input_id, input_data)
+      if input_id == "reset" and input_data.pressed:
+         self.state_machine.change("start")
+      else:
+         self.player.on_input(input_id, input_data)
+         #self.all_enemy[0].on_input(input_id, input_data)
 
    def exit(self) -> None:
         Timer.clear() 

@@ -55,9 +55,12 @@ class GameEntity(mixins.DrawableMixin, mixins.AnimatedMixin, mixins.CollidableMi
         self.state_machine.change(state_id, *args, **kwargs)
 
     def update(self, dt: float, timer: int) -> None:
-        self.timer = timer
+        #self.timer = timer
         self.state_machine.update(dt)
         mixins.AnimatedMixin.update(self, dt)
+
+    def handle_tilemap_check_collison(self) -> bool:
+        return self.handle_tilemap_collision_on_right() or self.handle_tilemap_collision_on_left() or self.handle_tilemap_collision_on_top() or self.handle_tilemap_collision_on_bottom()
 
     def handle_tilemap_collision_on_top(self) -> bool:
         collision_rect = self.get_collision_rect()

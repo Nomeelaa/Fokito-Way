@@ -10,11 +10,16 @@ from src.states.entities import enemy_states
 from gale.input_handler import InputData
 
 class Enemy(GameEntity):
-    def __init__(self, x: int, y: int, game_level: TypeVar("GameLevel")) -> None:
+    def __init__(self, x: int, y: int, game_level: TypeVar("GameLevel"), dir: str) -> None:
         self.in_play = True
         self.move_direction = random.choice(['left', 'right', 'up', 'down'])
         self.life = 10
-        self.scan_area = 50
+        self.scan_area = 150
+        self.actual_direction = None
+        self.into_area = False
+        self.collision = False
+        self.cambie = False
+        self.no_change = False
         super().__init__(
             x,
             y,
@@ -25,6 +30,7 @@ class Enemy(GameEntity):
             states={
                 "idle": lambda sm: enemy_states.IdleState(self, sm),
                 "walk": lambda sm: enemy_states.WalkState(self, sm),
+                "attack": lambda sm: enemy_states.AttackState(self, sm),
             },
            
             animation_defs={
@@ -46,37 +52,29 @@ class Enemy(GameEntity):
         self.x += dx * settings.ENEMY_SPEED
         self.y += dy * settings.ENEMY_SPEED
 
-    def follow_entity(self, x: int, y: int) -> None:
-        dx = x - self.get_collision_rect().left
-        dy = y - self.get_collision_rect().top
-
-        if dy < 0 and dx > dy:
-            if dx < 0:
-                self.vx = -settings.ENEMY_SPEED
+    def where_is(self, center_1: tuple[int,int], center_2: tuple[int,int]) -> str:
+        if center_1[1] < center_2[1]:
+            if center_1[0] < center_2[0]:
+                return "UP_LEFT"
+            elif center_1[0] > center_2[0]:
+                return "UP_RIGHT"
             else:
-                self.vx = settings.ENEMY_SPEED
-        elif dy < 0 and dx < dy:
-            self.vy = -settings.ENEMY_SPEED
+                return "UP"
+        elif center_1[1] == center_2[1]:
+            if center_1[0] < center_2[0]:
+                return "LEFT"
+            elif center_1[0] > center_2[0]:
+                return "RIGHT"
         else:
-            if dx < 0:
-                self.vx = -settings.ENEMY_SPEED
+            if center_1[0] < center_2[0]:
+                return "DOWN_LEFT"
+            elif center_1[0] > center_2[0]:
+                return "DOWN_RIGHT"
             else:
-                self.vx = settings.ENEMY_SPEED
+                return "DOWN"
 
-        if dy > 0 and dx < dy:
-            if dx < 0:
-                self.vx = -settings.ENEMY_SPEED
-            else:
-                self.vx = settings.ENEMY_SPEED
-        elif dy > 0 and dx > dy:
-            self.vy = settings.ENEMY_SPEED
-        else:
-            if dx < 0:
-                self.vx = -settings.ENEMY_SPEED
-            else:
-                self.vx = settings.ENEMY_SPEED
-
-        #if dis
+    def in_area(self, another: any) -> bool:
+        return self.collides_others(self.get_scan_rect(),another)
 
     def get_collision_rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
@@ -88,9 +86,6 @@ class Enemy(GameEntity):
             self.width + self.scan_area,
             self.height + self.scan_area
         )
-    
-    def in_area(self, another: any) -> bool:
-        return self.collides_others(self.get_scan_rect(),another)
 
     def solve_world_boundaries(self) -> None:
         r = self.get_collision_rect()

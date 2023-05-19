@@ -21,6 +21,10 @@ input_handler.InputHandler.set_keyboard_action(input_handler.KEY_DOWN, 'move_dow
 input_handler.InputHandler.set_keyboard_action(input_handler.KEY_SPACE, 'jump')
 input_handler.InputHandler.set_mouse_click_action(input_handler.MOUSE_BUTTON_1, 'attack')
 
+#for testing
+input_handler.InputHandler.set_keyboard_action(input_handler.KEY_r, 'reset')
+input_handler.InputHandler.set_keyboard_action(input_handler.KEY_c, 'change')
+
 # Size we want to emulate
 VIRTUAL_WIDTH = 640
 VIRTUAL_HEIGHT = 480

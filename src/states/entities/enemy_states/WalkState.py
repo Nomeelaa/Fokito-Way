@@ -22,6 +22,7 @@ class WalkState(BaseEntityState):
     def enter(self, direction: str) -> None:
         self.collision = False
         self.entity.init_direction = direction
+        self.direction = direction
 
         #Define Vx or Vy and animation depending of direction
         if direction == "left":
@@ -90,11 +91,11 @@ class WalkState(BaseEntityState):
             self.t0 = self.t1
             self.entity.vx = 0
             self.entity.vy = 0
-            if self.entity.init_direction in ("left", "right"):
+            if self.direction in ("left", "right"):
                 self.entity.change_animation("idle_horizontal")
-            elif self.entity.init_direction == "up":
+            elif self.direction == "up":
                 self.entity.change_animation("idle_up")
-            elif self.entity.init_direction == "down":
+            elif self.direction == "down":
                 self.entity.change_animation("idle")
             self.entity.change_state("idle", "idle")
 
