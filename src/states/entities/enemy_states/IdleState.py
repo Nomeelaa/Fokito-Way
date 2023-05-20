@@ -22,9 +22,6 @@ class IdleState(BaseEntityState):
     def enter(self, direction: str) -> None:
         self.entity.vx = 0
         self.entity.vy = 0
-        self.entity.no_change = False
-        self.entity.actual_direction = direction
-        #self.entity.actual_direction = direction
         if direction == "idle":
             self.time_wait = randint(2,4)
         else:
@@ -48,12 +45,9 @@ class IdleState(BaseEntityState):
         if dt >= self.time_wait:
             self.t0 = self.t1
             temp = random.choice(["left", "right", "up", "down"])
-            self.entity.actual_direction = temp
             self.entity.change_state("walk", temp)
         else:
             pass
 
     def on_input(self, input_id: str, input_data: InputData) -> None:
         pass
-        #if input_id == "attack" and input_data.pressed:
-        #    self.entity.change_state("walk", "ss")

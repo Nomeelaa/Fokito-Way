@@ -82,7 +82,10 @@ class GameEntity(mixins.DrawableMixin, mixins.AnimatedMixin, mixins.CollidableMi
             return True
 
         return False
-
+    
+    def get_height(self) -> int:
+        return self.height
+    
     def handle_tilemap_collision_on_bottom(self) -> bool:
         collision_rect = self.get_collision_rect()
 

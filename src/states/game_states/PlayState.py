@@ -26,6 +26,7 @@ from gale.state import BaseState
 #import Entites class
 from src.Player import Player
 from src.Enemy import Enemy
+from src.enemys.Martian import Martian
 
 
 class PlayState(BaseState):
@@ -47,24 +48,26 @@ class PlayState(BaseState):
       self.score = enter_params.get("score", 0)
       #create a list of enemy
       self.all_enemy = []
+      self.type_enemy = ["martian", "skeleton"]
 
-      for _ in range(randint(3,30)):
-         self.all_enemy.append(Enemy(randint(18,100), randint(50,400), self.game_level, "idle"))
-
-      if (self.player.life == 100):
-         print("Life of player: 100")
+      if self.level < 2:
+         for _ in range(randint(5,10)):
+            self.all_enemy.append(Martian(randint(180,486), randint(360,558), self.game_level))
+      #elif self.level > 10 and self.level > 1 :
+      #   for _ in range(randint(10,30)):
+      #      self.all_enemy.append(Enemy(randint(738,918), randint(3,342), self.game_level))
 
       for _, enemy in enumerate(self.all_enemy):
          enemy.change_state("idle", "None")
     
 
       def create_new_enemy():
-         for _ in range(randint(1,10)):
-            self.all_enemy.append(Enemy(randint(18,100), randint(50,400), self.game_level))
-         #for _, enemy in enumerate(self.all_enemy):
-         #   enemy.change_state("idle", randint(1,10)) #reset all enemy time
+         for _ in range(randint(1,5)):
+            self.all_enemy.append(Enemy(randint(738,918), randint(3,342), self.game_level))
+         for _, enemy in enumerate(self.all_enemy):
+            enemy.change_state("idle", randint(1,10)) #reset all enemy time
 
-      #Timer.every(30, create_new_enemy, 2)
+      #Timer.every(60, create_new_enemy, 2)
 
       self.time_in_play = "00:00"
       #self.time_in_play = "00:00:00"
@@ -73,10 +76,8 @@ class PlayState(BaseState):
       self.minutes = 0
       self.hours = 0
 
-      def count_timer():
+      def count_timer() -> None:
          self.seconds += 1
-         #for _, enemy in enumerate(self.all_enemy):
-         #   enemy.timer += 1
          if self.seconds == 60 :
             self.seconds = 0
             self.minutes += 1
@@ -90,7 +91,16 @@ class PlayState(BaseState):
 
       #Timer.every(1, countdown_timer) #ejecuta la funcion cada x segundos
 
+   def recover_life(self) -> None:
+      pass
+
    def update(self, dt: float) -> None:
+
+      print("life: ", self.player.life)
+      if self.score % 20 == 0 and self.player.life <= 90:
+         self.player.life += 10
+         print("recover: ", self.player.life)
+
       self.player.update(dt, self.seconds)
 
       self.camera.x = max(
@@ -155,43 +165,72 @@ class PlayState(BaseState):
          #world_surface.fill((255,255,255), enemy.get_scan_rect())
          enemy.render(world_surface)
 
-      #for i in range(4):
-      #   self.all_enemy[i].render(world_surface)
-      #self.enemy.render(surface)
       surface.blit(world_surface, (-self.camera.x, -self.camera.y))
 
+      #Render Life and BarLife
       render_text(
          surface,
          "Life",
          settings.FONTS["score_tiny"],
-         470,
-         5,
-         (255, 255, 255),
-      )
-
-      surface.fill((255,255,255), pygame.Rect(520,2,104,14)) #Rect(x,y,width,height)
-      surface.fill((0,0,0), pygame.Rect(522,4,100,10)) #Rect(x,y,width,height)
-      surface.fill((255,0,0), pygame.Rect(522,4,self.player.life,10)) #Rect(x,y,width,height)
-      
-      render_text(
-         surface,
-         f"Score: {self.score}",
-         settings.FONTS["score_tiny"],
-         settings.VIRTUAL_WIDTH - 80,
-         20,
-         (255, 255, 255),
-      )
-
-      
-      render_text(
-         surface,
-         f"Time: {self.time_in_play}",
-         settings.FONTS["score_tiny"],
-         settings.VIRTUAL_WIDTH - 150,
-         55,
+         495,
+         6,
          (255, 255, 255),
          shadowed=True,
       )
+
+      surface.fill((255,255,255), pygame.Rect(530,4,104,14)) #Rect(x,y,width,height)
+      surface.fill((0,0,0), pygame.Rect(532,6,100,10)) #Rect(x,y,width,height)
+      surface.fill((255,0,0), pygame.Rect(532,6,self.player.life,10)) #Rect(x,y,width,height)
+      
+      #Render Score of player
+      render_text(
+         surface,
+         f"Score: {self.score:05}",
+         settings.FONTS["score_tiny"],
+         settings.VIRTUAL_WIDTH - 90,
+         20,
+         (255, 255, 255),
+         shadowed=True,
+      )
+
+      #Render Total Enemy
+      if len(self.all_enemy) > 0:
+         render_text(
+            surface,
+            f"For Dead: {len(self.all_enemy):03}",
+            settings.FONTS["score_tiny"],
+            settings.VIRTUAL_WIDTH - 100,
+            35,
+            (255, 255, 255),
+            shadowed=True,
+         )
+      else:
+         render_text(
+            surface,
+            f"For Dead: {0:03}",
+            settings.FONTS["score_tiny"],
+            settings.VIRTUAL_WIDTH - 100,
+            35,
+            (255, 255, 255),
+            shadowed=True,
+         )
+
+      #Render time of game
+      surface.fill((0,0,0), pygame.Rect(
+         (settings.VIRTUAL_WIDTH // 2) - 50, 0,
+         100,20)
+      ) #Rect(x,y,width,height)
+      
+      render_text(
+            surface,
+            f"Time: {self.time_in_play}",
+            settings.FONTS["score_tiny"],
+            settings.VIRTUAL_WIDTH // 2,
+            10,
+            (255, 255, 255),
+            center=True,
+        )
+      
       
 
    def on_input(self, input_id: str, input_data: InputData) -> None:

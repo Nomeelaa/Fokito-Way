@@ -29,12 +29,9 @@ class AttackState(BaseEntityState):
             if self.entity.handle_tilemap_check_collison():
                 self.entity.vy = 0
                 self.entity.vx = 0
-                self.entity.no_change = True
-                self.entity.collision = False
                 self.entity.change_state("idle", 0)
                 
             else:
-                print("collison falsa")
                 self_rect = self.entity.get_collision_rect()
                 temp_pos = self.where_is(self.player_rect.center, self_rect.center)
 

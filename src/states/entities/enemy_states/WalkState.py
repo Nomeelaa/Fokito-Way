@@ -21,7 +21,6 @@ from src.states.entities.enemy_states.BaseEntityState import BaseEntityState
 class WalkState(BaseEntityState):
     def enter(self, direction: str) -> None:
         self.collision = False
-        self.entity.init_direction = direction
         self.direction = direction
 
         #Define Vx or Vy and animation depending of direction

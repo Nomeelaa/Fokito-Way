@@ -9,7 +9,7 @@ from src.states.entities import enemy_states
 
 from gale.input_handler import InputData
 
-class Enemy(GameEntity):
+class Martian(GameEntity):
     def __init__(self, x: int, y: int, game_level: TypeVar("GameLevel")) -> None:
         self.in_play = True
         self.move_direction = random.choice(['left', 'right', 'up', 'down'])
