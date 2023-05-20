@@ -3,8 +3,8 @@ VGP 2023
 Group: DJ-TKD
 Project: Fokito Way
 
-Author: Gerardo Montes, Alberto 
-gm5072@gmail.com
+Authors: Gerardo Montes, Alberto 
+gm5072@gmail.com, albert@defalut.com
 
 This file contains the class to define the Start state.
 """
@@ -149,9 +149,11 @@ class PlayState(BaseState):
                self.player.victory = True
          else:
             self.state_machine.change("game_over", score=self.score)
+      elif self.level == settings.NUM_LEVELS:
+         self.state_machine.change("victory", level=self.level, score=self.score, state="END")
       else:
          if self.player.victory:
-            self.state_machine.change("victory", level=self.level, score=self.score)
+            self.state_machine.change("victory", level=self.level, score=self.score, state="IN_PLAY")
     
 
    def render(self, surface: pygame.Surface) -> None:
@@ -164,7 +166,6 @@ class PlayState(BaseState):
       
       #world_surface.fill((255,255,255), self.player.get_collision_rect())
       self.player.render(world_surface)
-      #self.enemy.render(world_surface)
 
       for _, enemy in enumerate(self.all_enemy):
          #world_surface.fill((255,255,255), enemy.get_scan_rect())

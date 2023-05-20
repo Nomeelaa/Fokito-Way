@@ -47,7 +47,7 @@ class StartState(BaseState):
                 sys.exit()
 
         if input_id == "change" and input_data.pressed:
-            self.state_machine.change("victory", level=self.level, score=self.score)
+            self.state_machine.change("victory", level=self.level, score=self.score, state="END")
 
     def render(self, surface: pygame.Surface) -> None:
         render_text(
