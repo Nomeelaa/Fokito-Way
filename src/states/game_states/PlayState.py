@@ -53,9 +53,9 @@ class PlayState(BaseState):
       if self.level < 2:
          for _ in range(randint(5,10)):
             self.all_enemy.append(Martian(randint(180,486), randint(360,558), self.game_level))
-      #elif self.level > 10 and self.level > 1 :
-      #   for _ in range(randint(10,30)):
-      #      self.all_enemy.append(Enemy(randint(738,918), randint(3,342), self.game_level))
+      elif self.level < 10 and self.level > 1 :
+         for _ in range(randint(10,30)):
+            self.all_enemy.append(Enemy(randint(738,918), randint(3,342), self.game_level))
 
       for _, enemy in enumerate(self.all_enemy):
          enemy.change_state("idle", "None")
@@ -91,63 +91,68 @@ class PlayState(BaseState):
 
       #Timer.every(1, countdown_timer) #ejecuta la funcion cada x segundos
 
-   def recover_life(self) -> None:
-      pass
 
    def update(self, dt: float) -> None:
+      print("Enemigos: ", len(self.all_enemy))
+      if len(self.all_enemy) > 0:
 
-      print("life: ", self.player.life)
-      if self.score % 20 == 0 and self.player.life <= 90:
-         self.player.life += 10
-         print("recover: ", self.player.life)
+         if self.score % 20 == 0 and self.player.life <= 90:
+            self.player.life += 1
+            print("recover: ", self.player.life)
 
-      self.player.update(dt, self.seconds)
+         self.player.update(dt, self.seconds)
 
-      self.camera.x = max(
-         0,
-         min(
-            self.player.x + 8 - settings.VIRTUAL_WIDTH // 2,
-            self.tilemap.width - settings.VIRTUAL_WIDTH,
+         self.camera.x = max(
+            0,
+            min(
+               self.player.x + 8 - settings.VIRTUAL_WIDTH // 2,
+               self.tilemap.width - settings.VIRTUAL_WIDTH,
+            )
          )
-      )
 
-      self.camera.y = max(
-         0,
-         min(
-            self.player.y + 10 - settings.VIRTUAL_HEIGHT // 2,
-            self.tilemap.height - settings.VIRTUAL_HEIGHT,
-         ),
-      )
-#############################################################
-      for _, enemy in enumerate(self.all_enemy):
-         if enemy.in_area(self.player):
-            enemy.into_area = True
-            enemy.change_state("attack", self.player.get_collision_rect())
-         enemy.update(dt, 0)
-         
-#############################################################      
-
-      self.game_level.update(dt)
-
-      #Check collision of enemy with player to rest life
-      if (self.player.life > 0):
+         self.camera.y = max(
+            0,
+            min(
+               self.player.y + 10 - settings.VIRTUAL_HEIGHT // 2,
+               self.tilemap.height - settings.VIRTUAL_HEIGHT,
+            ),
+         )
+   #############################################################
          for _, enemy in enumerate(self.all_enemy):
+            if enemy.in_area(self.player):
+               enemy.into_area = True
+               enemy.change_state("attack", self.player.get_collision_rect())
+            enemy.update(dt, 0)
+            
+   #############################################################      
 
-            if enemy.collides(self.player):
-               print("score: ", self.score)
-               if (self.player.weapon is None):
-                  self.player.life -= 1
-               else:
-                  enemy.life -= self.player.attack
-                  self.player.life -= 1
-               if enemy.life == 0:
-                  self.score += 5
-                  self.all_enemy.remove(enemy)
-                  break
-            if self.player.collides(enemy):
-               print("Colision")
+         self.game_level.update(dt)
+
+         #Check collision of enemy with player to rest life
+         if (self.player.life > 0):
+            for _, enemy in enumerate(self.all_enemy):
+
+               if enemy.collides(self.player):
+                  print("score: ", self.score)
+                  if (self.player.weapon is None):
+                     self.player.life -= 1
+                  else:
+                     enemy.life -= self.player.attack
+                     self.player.life -= 1
+                  if enemy.life == 0:
+                     self.score += 5
+                     self.all_enemy.remove(enemy)
+                     break
+               if self.player.collides(enemy):
+                  print("Colision")
+            if len(self.all_enemy) == 0:
+               self.player.victory = True
+         else:
+            self.state_machine.change("game_over", score=self.score)
       else:
-         self.state_machine.change("game_over", score=self.score)      
+         if self.player.victory:
+            self.state_machine.change("victory", level=self.level, score=self.score)
+    
 
    def render(self, surface: pygame.Surface) -> None:
       surface.fill((0,0,0))

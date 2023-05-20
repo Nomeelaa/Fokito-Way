@@ -11,7 +11,7 @@ class Player(GameEntity):
         self.actual_direction = None
         self.attack = 1
         self.weapon = True
-        #self.score = 0
+        self.victory = False
         super().__init__(
             x,
             y,

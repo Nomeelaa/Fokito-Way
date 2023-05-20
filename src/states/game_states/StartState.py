@@ -22,6 +22,8 @@ import settings
 
 class StartState(BaseState):
     def enter(self) -> None:
+        self.level = 1
+        self.score = 0
         self.selected = 1
 
     def update(self, dt: float) -> None:
@@ -43,6 +45,9 @@ class StartState(BaseState):
                 #self.state_machine.change("play", level=1, player=self.player, enemy=self.enemy)
             else:
                 sys.exit()
+
+        if input_id == "change" and input_data.pressed:
+            self.state_machine.change("victory", level=self.level, score=self.score)
 
     def render(self, surface: pygame.Surface) -> None:
         render_text(

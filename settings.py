@@ -109,7 +109,7 @@ FONTS = {
 }
 
 #implement with drawableMixin
-NUM_LEVELS = 1
+NUM_LEVELS = 2
 
 LevelLoader = level_loader.TmxSceneLoader
 

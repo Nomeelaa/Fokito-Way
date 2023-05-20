@@ -19,8 +19,9 @@ from gale.text import render_text
 import settings
 
 
-class GameOverState(BaseState):
+class VictoryState(BaseState):
     def enter(self, **enter_params: dict) -> None:
+      self.level = enter_params.get("level")
       self.selected = 1
       self.score = enter_params.get("score", 0)
 
@@ -29,7 +30,7 @@ class GameOverState(BaseState):
 
         render_text(
             surface,
-            "Game Over",
+            "Victory",
             settings.FONTS["large"],
             settings.VIRTUAL_WIDTH // 2,
             settings.VIRTUAL_HEIGHT // 3,
@@ -50,7 +51,7 @@ class GameOverState(BaseState):
 
         render_text(
             surface,
-            "Play Again",
+            "Next Level",
             settings.FONTS["medium"],
             settings.VIRTUAL_WIDTH // 2,
             settings.VIRTUAL_HEIGHT - 60,
@@ -69,21 +70,12 @@ class GameOverState(BaseState):
             color,
             center=True,
         )
-      
-        print("score: ", self.score)
-        render_text(
-            surface,
-            f"Score: {self.score}",
-            settings.FONTS["score_tiny"],
-            settings.VIRTUAL_WIDTH - 80,
-            5,
-            (255, 255, 255),
-        )
 
     def on_input(self, input_id: str, input_data: InputData) -> None:
         if input_id == "move_down" and input_data.pressed and self.selected == 1:
+            pass
             #settings.SOUNDS["paddle_hit"].play()
-            self.selected = 2
+            #self.selected = 2
         elif input_id == "move_up" and input_data.pressed and self.selected == 2:
             #settings.SOUNDS["paddle_hit"].play()
             self.selected = 1
@@ -92,7 +84,7 @@ class GameOverState(BaseState):
             pass
 
             if self.selected == 1:
-                self.state_machine.change("play", level=1)
+                self.state_machine.change("play", level=self.level+1)
                 #self.state_machine.change("play", level=1, player=self.player, enemy=self.enemy)
             else:
                 sys.exit()
